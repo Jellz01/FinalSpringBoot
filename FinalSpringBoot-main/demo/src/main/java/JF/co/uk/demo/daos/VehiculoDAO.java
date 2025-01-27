@@ -1,42 +1,25 @@
 package JF.co.uk.demo.daos;
 
-
 import JF.co.uk.demo.models.Vehiculo;
-import jakarta.persistence.EntityManager;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
+@Repository
+public interface VehiculoDAO extends JpaRepository<Vehiculo, Long> {
 
+    // Custom query to find a vehicle by its ID (JpaRepository provides findById method)
+    Optional<Vehiculo> findById(Long id);
 
+    // List all vehicles, JpaRepository provides findAll method
+    List<Vehiculo> findAll();
 
+    // Delete vehicle by ID, JpaRepository provides deleteById method
+    void deleteById(Long id);
 
-public class VehiculoDAO {
-
-    private EntityManager em;
-
-
-    public void crearVehiculo(Vehiculo vehiculo) {
-        em.persist(vehiculo);
-    }
-
-    public Vehiculo buscarPorId(Long id) {
-        return em.find(Vehiculo.class, id);
-    }
-
-    public List<Vehiculo> listarVehiculos() {
-        return em.createQuery("SELECT v FROM Vehiculo v", Vehiculo.class).getResultList();
-    }
-
-
-    public Vehiculo actualizarVehiculo(Vehiculo vehiculo) {
-        return em.merge(vehiculo);
-    }
-
-
-    public void eliminarVehiculo(Long id) {
-        Vehiculo vehiculo = em.find(Vehiculo.class, id);
-        if (vehiculo != null) {
-            em.remove(vehiculo);
-        }
-    }
+    // Update vehicle: JpaRepository's save method supports both insert and update
+    @Override
+    <S extends Vehiculo> S save(S entity);
 }

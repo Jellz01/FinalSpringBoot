@@ -1,6 +1,6 @@
 package JF.co.uk.demo.models;
 
-import jakarta.json.bind.annotation.JsonbTransient;
+
 import jakarta.persistence.*;
 import java.io.Serializable;
 import java.util.List;
@@ -41,7 +41,7 @@ public class Usuario implements Serializable {
 
     // Nueva relación OneToMany con Vehiculo
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonbTransient
+
     private List<Vehiculo> vehiculos;
 
     // Getters y Setters

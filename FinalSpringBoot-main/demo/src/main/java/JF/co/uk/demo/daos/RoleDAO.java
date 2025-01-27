@@ -1,39 +1,29 @@
 package JF.co.uk.demo.daos;
 
-import com.cultodeportivo.demo65jakartaee2.models.Role;
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
-import jakarta.transaction.Transactional;
+import JF.co.uk.demo.models.Role;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
 import java.util.List;
+import java.util.Optional;
 
+@Repository
+public interface RoleDAO extends JpaRepository<Role, Long> {
 
-public class RoleDAO {
+    // JpaRepository provides findAll() for listing all roles
+    List<Role> findAll();
 
+    // JpaRepository provides findById() for searching by id
+    Optional<Role> findById(Long id);
 
-    private EntityManager em;
+    // JpaRepository provides deleteById() for deleting by id
+    void deleteById(Long id);
 
+    // JpaRepository's save() method supports both creating and updating a role
+    @Override
+    <S extends Role> S save(S entity);
 
-    public void crearRole(Role role) {
-        em.persist(role);
-    }
-
-    public Role encontrarRolePorId(Long id) {
-        return em.find(Role.class, id);
-    }
-
-    public List<Role> getRoles() {
-        return em.createQuery("SELECT r FROM Role r", Role.class).getResultList();
-    }
-
-    public Role actualizarRole(Role role) {
-        return em.merge(role);
-    }
-
-    public void eliminarRole(Long id) {
-        Role role = em.find(Role.class, id);
-        if (role != null) {
-            em.remove(role);
-        }
-    }
+    // You can define other custom queries if necessary using @Query annotation
+    // @Query("SELECT r FROM Role r WHERE r.someField = :someValue")
+    // List<Role> findBySomeCriteria(@Param("someValue") String someValue);
 }

@@ -1,46 +1,25 @@
 package JF.co.uk.demo.daos;
 
-import com.cultodeportivo.demo65jakartaee2.models.Usuario;
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
-import jakarta.transaction.Transactional;
+import JF.co.uk.demo.models.Usuario;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
 import java.util.List;
+import java.util.Optional;
 
-@ApplicationScoped
-public class UsuarioDAO {
+@Repository
+public interface UsuarioDAO extends JpaRepository<Usuario, Long> {
 
-     private EntityManager em;
+    // Custom query to find a user by email
+    Optional<Usuario> findByEmail(String email);
 
+    // Listing all users
+    List<Usuario> findAll();
 
-    public void crearUsuario(Usuario usuario) {
-        em.persist(usuario);
-    }
+    // Delete user by ID, JpaRepository provides deleteById
+    void deleteById(Long id);
 
-
-    public Usuario actualizarUsuario(Usuario usuario) {
-        return em.merge(usuario);
-    }
-
-    public Usuario buscarPorId(Long id) {
-        return em.find(Usuario.class, id);
-    }
-
-    public Usuario buscarPorEmail(String email) {
-        return em.createQuery("SELECT u FROM Usuario u WHERE u.email = :email", Usuario.class)
-                .setParameter("email", email)
-                .getSingleResult();
-    }
-
-    public List<Usuario> listarUsuarios() {
-        return em.createQuery("SELECT u FROM Usuario u", Usuario.class).getResultList();
-    }
-
-
-    public void eliminarUsuario(Long id) {
-        Usuario usuario = em.find(Usuario.class, id);
-        if (usuario != null) {
-            em.remove(usuario);
-        }
-    }
+    // Update user: Spring Data JPA supports save() for both insert and update
+    @Override
+    <S extends Usuario> S save(S entity);
 }

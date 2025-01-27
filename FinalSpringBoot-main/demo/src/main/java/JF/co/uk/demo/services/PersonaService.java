@@ -1,81 +1,29 @@
 package JF.co.uk.demo.services;
 
-import com.cultodeportivo.demo65jakartaee2.business.GestionPersona;
-import com.cultodeportivo.demo65jakartaee2.models.Persona;
-import jakarta.inject.Inject;
-import jakarta.ws.rs.*;
-import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
+import JF.co.uk.demo.models.Persona;
+
 import java.util.List;
+import java.util.Optional;
 
-@Path("/personas")
-public class PersonaService {
+public interface PersonaService {
 
-    @Inject
-    private GestionPersona gestionPersonas;
 
-    @POST
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response crearPersona(Persona persona) {
-        try {
-            gestionPersonas.crearPersona(persona);
-            return Response.status(Response.Status.CREATED)
-                    .entity(persona)
-                    .build();
-        } catch (Exception e) {
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity("Error al crear la persona: " + e.getMessage())
-                    .build();
-        }
-    }
+    // JpaRepository provides findAll() for listing all personas
+    List<Persona> findAll();
 
-    @GET
-    @Path("/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response obtenerPersona(@PathParam("id") Long id) {
-        Persona persona = gestionPersonas.buscarPorId(id);
-        if (persona != null) {
-            return Response.ok(persona).build();
-        } else {
-            return Response.status(Response.Status.NOT_FOUND)
-                    .entity("Persona no encontrada")
-                    .build();
-        }
-    }
+    // JpaRepository provides findById() for searching by id
+    Optional<Persona> findById(Long id);
 
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response listarPersonas() {
-        List<Persona> personas = gestionPersonas.listarPersonas();
-        return Response.ok(personas).build();
-    }
+    // JpaRepository provides deleteById() for deleting by id
+    void deleteById(Long id);
 
-    @PUT
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response actualizarPersona(Persona persona) {
-        Persona personaActualizada = gestionPersonas.actualizarPersona(persona);
-        if (personaActualizada != null) {
-            return Response.ok(personaActualizada).build();
-        } else {
-            return Response.status(Response.Status.NOT_FOUND)
-                    .entity("Persona no encontrada")
-                    .build();
-        }
-    }
+    // JpaRepository's save() method supports both creating and updating a persona
+    Persona save(Persona persona);
 
-    @DELETE
-    @Path("/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response eliminarPersona(@PathParam("id") Long id) {
-        try {
-            gestionPersonas.eliminarPersona(id);
-            return Response.status(Response.Status.NO_CONTENT).build();
-        } catch (Exception e) {
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity("Error al eliminar la persona: " + e.getMessage())
-                    .build();
-        }
-    }
+    // Custom query for finding persona by cedula
+    Persona findByCedula(String cedula);
+
+    // You can define other custom queries if necessary using @Query annotation
+    // @Query("SELECT p FROM Persona p WHERE p.someField = :someValue")
+    // List<Persona> findBySomeCriteria(@Param("someValue") String someValue);
 }

@@ -1,41 +1,35 @@
 package JF.co.uk.demo.daos;
 
 import JF.co.uk.demo.models.Tarifa;
-import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
+@Repository
+public interface TarifaDAO extends JpaRepository<Tarifa, Long> {
 
-public class TarifaDAO {
+    // List all tarifas, JpaRepository provides findAll method
+    List<Tarifa> findAll();
 
+    // Find tarifa by ID, JpaRepository provides findById method
+    Optional<Tarifa> findById(Long id);
 
-    private EntityManager em;
+    // Delete tarifa by ID, JpaRepository provides deleteById method
+    void deleteById(Long id);
 
+    // Update tarifa: JpaRepository's save method supports both insert and update
+    @Override
+    <S extends Tarifa> S save(S entity);
 
-    public void crearTarifa(Tarifa tarifa) {
-        em.persist(tarifa);
-    }
+    // Custom query to list tarifas with a specific attribute (Example)
+    @Query("SELECT t FROM Tarifa t WHERE t.attribute = :value")
+    List<Tarifa> findTarifasByAttribute(@Param("value") String value);
 
-
-    public Tarifa actualizarTarifa(Tarifa tarifa) {
-        return em.merge(tarifa);
-    }
-
-    public Tarifa buscarPorId(Long id) {
-        return em.find(Tarifa.class, id);
-    }
-
-    public List<Tarifa> listarTarifas() {
-        return em.createQuery("SELECT t FROM Tarifa t", Tarifa.class).getResultList();
-    }
-
-
-    public void eliminarTarifa(Long id) {
-        Tarifa tarifa = em.find(Tarifa.class, id);
-        if (tarifa != null) {
-            em.remove(tarifa);
-        }
-    }
+    // Example of native SQL query for tarifas
+    @Query(value = "SELECT * FROM tarifa t WHERE t.attribute = :value", nativeQuery = true)
+    List<Tarifa> findTarifasByAttributeNative(@Param("value") String value);
 }

@@ -1,11 +1,12 @@
 package JF.co.uk.demo.models;
 
-
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import org.springframework.data.annotation.Id;
+import jakarta.persistence.*;
 
-
+@Entity
 public class Contrato implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -22,6 +23,7 @@ public class Contrato implements Serializable {
         this.total = total;
     }
 
+    @jakarta.persistence.Id
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -116,4 +118,5 @@ public class Contrato implements Serializable {
                 ", total=" + total +
                 '}';
     }
+
 }
